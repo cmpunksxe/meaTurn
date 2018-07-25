@@ -104,6 +104,7 @@
 		8D6DC71C2105964000179909 /* icon85.png in Resources */ = {isa = PBXBuildFile; fileRef = 8D6DC6C42105964000179909 /* icon85.png */; };
 		8D6DC71D2105964000179909 /* icon86.png in Resources */ = {isa = PBXBuildFile; fileRef = 8D6DC6C52105964000179909 /* icon86.png */; };
 		8D6DC71E2105964000179909 /* icon87.png in Resources */ = {isa = PBXBuildFile; fileRef = 8D6DC6C62105964000179909 /* icon87.png */; };
+		8D9C8FAD21082EB900B23A85 /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 8D9C8FAC21082EB900B23A85 /* splash.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -227,6 +228,7 @@
 		8D6DC6C42105964000179909 /* icon85.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon85.png; sourceTree = "<group>"; };
 		8D6DC6C52105964000179909 /* icon86.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon86.png; sourceTree = "<group>"; };
 		8D6DC6C62105964000179909 /* icon87.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon87.png; sourceTree = "<group>"; };
+		8D9C8FAC21082EB900B23A85 /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = splash.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -323,6 +325,7 @@
 				8D6DC6852105964000179909 /* bird */,
 				8D6DC68B2105964000179909 /* breakfast */,
 				8D6DC6952105964000179909 /* dott.png */,
+				8D9C8FAC21082EB900B23A85 /* splash.png */,
 				8D6DC6962105964000179909 /* education */,
 				8D6DC6A72105964000179909 /* fruit */,
 				8D6DC6BC2105964000179909 /* icecream */,
@@ -604,6 +607,7 @@
 				8D6DC6DA2105964000179909 /* icon27.png in Resources */,
 				8D6DC6D82105964000179909 /* icon25.png in Resources */,
 				8D6DC6FE2105964000179909 /* icon55.png in Resources */,
+				8D9C8FAD21082EB900B23A85 /* splash.png in Resources */,
 				8D6DC7142105964000179909 /* icon77.png in Resources */,
 				8D4CF56E20FC50110049CC29 /* LaunchScreen.storyboard in Resources */,
 				8D6DC7122105964000179909 /* icon75.png in Resources */,
