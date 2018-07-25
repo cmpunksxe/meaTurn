@@ -32,6 +32,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        //add splash image
+        addSplashImage()
+    
         //add background image to parent view
         if let image = UIImage(named: "dott.png") {
             view.backgroundColor = UIColor(patternImage: image)
@@ -44,23 +47,6 @@ class ViewController: UIViewController {
         loadImageArray()
         loadandAlignImages()
         
-        //add tap gesture in rightImagView1 for clicking in image
-        let tapGestureRecognizer1 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image1Taped(_:)))
-        rightImagView1.isUserInteractionEnabled = true
-        tapGestureRecognizer1.numberOfTapsRequired = 1
-        rightImagView1.addGestureRecognizer(tapGestureRecognizer1)
-        
-        //add tap gesture in rightImagView1 for clicking in image
-        let tapGestureRecognizer2 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image2Taped(_:)))
-        rightImagView2.isUserInteractionEnabled = true
-        tapGestureRecognizer2.numberOfTapsRequired = 1
-        rightImagView2.addGestureRecognizer(tapGestureRecognizer2)
-        
-        //add tap gesture in rightImagView1 for clicking in image
-        let tapGestureRecognizer3 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image3Taped(_:)))
-        rightImagView3.isUserInteractionEnabled = true
-        tapGestureRecognizer3.numberOfTapsRequired = 1
-        rightImagView3.addGestureRecognizer(tapGestureRecognizer3)
     
     }
 
@@ -74,6 +60,31 @@ class ViewController: UIViewController {
     override var prefersStatusBarHidden : Bool {
         return true
     }
+    
+    //add splash image
+    func addSplashImage(){
+        
+        let splashImage = UIImage(named: "splash1.png")
+        let splashImageView = UIImageView(image: splashImage)
+        splashImageView.contentMode = .scaleAspectFill
+        splashImageView.frame = self.view.frame
+        self.view.addSubview(splashImageView)
+        self.view.bringSubview(toFront: splashImageView)
+        UIView.animate(withDuration: 0.3, delay: 2.0, options: .transitionFlipFromLeft, animations: {() -> Void in
+            
+            let y: CGFloat = 0.0
+            splashImageView.frame = CGRect(x: -(self.view.frame.size.width), y: y, width: (self.view.frame.size.width), height: (self.view
+                .frame.size.height))
+            
+        }, completion: {(_ finished: Bool) -> Void in
+            if finished {
+                splashImageView.removeFromSuperview()
+                self.addGestures()
+            }
+        })
+
+    }
+    
     
     //dissmiss alert and start new game
     func alertClose(_ sender:AnyObject) {
@@ -310,5 +321,27 @@ class ViewController: UIViewController {
         }
     }
     
+    
+    //add tap gestures to imageviews
+    func addGestures() {
+        
+        //add tap gesture in rightImagView1 for clicking in image
+        let tapGestureRecognizer1 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image1Taped(_:)))
+        rightImagView1.isUserInteractionEnabled = true
+        tapGestureRecognizer1.numberOfTapsRequired = 1
+        rightImagView1.addGestureRecognizer(tapGestureRecognizer1)
+        
+        //add tap gesture in rightImagView1 for clicking in image
+        let tapGestureRecognizer2 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image2Taped(_:)))
+        rightImagView2.isUserInteractionEnabled = true
+        tapGestureRecognizer2.numberOfTapsRequired = 1
+        rightImagView2.addGestureRecognizer(tapGestureRecognizer2)
+        
+        //add tap gesture in rightImagView1 for clicking in image
+        let tapGestureRecognizer3 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image3Taped(_:)))
+        rightImagView3.isUserInteractionEnabled = true
+        tapGestureRecognizer3.numberOfTapsRequired = 1
+        rightImagView3.addGestureRecognizer(tapGestureRecognizer3)
+    }
 }
 
