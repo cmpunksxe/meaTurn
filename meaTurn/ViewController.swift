@@ -17,6 +17,9 @@ class ViewController: UIViewController {
     @IBOutlet var rightImagView3: UIImageView!
     @IBOutlet var pointLbl: UILabel!
     
+    let backView = UIImageView()
+    var congratsView = UIImageView()
+    
     //different rotation angles for different image alignment (0,45,90,135,180,-45,-90,-135)
     var rotationAngleArray = [0, M_PI/4, M_PI/2, (3*M_PI)/4, M_PI, -M_PI/4, -M_PI/2, (-3*M_PI)/4]
     
@@ -27,6 +30,10 @@ class ViewController: UIViewController {
     var rightImageViewArray:Array<Any> = []
     var ImageArray:Array<Any> = []
     var player: AVAudioPlayer?
+    
+    var tapGestureRecognizer1 = UITapGestureRecognizer()
+    var tapGestureRecognizer2 = UITapGestureRecognizer()
+    var tapGestureRecognizer3 = UITapGestureRecognizer()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,9 +43,9 @@ class ViewController: UIViewController {
         addSplashImage()
     
         //add background image to parent view
-        if let image = UIImage(named: "dott.png") {
-            view.backgroundColor = UIColor(patternImage: image)
-        }
+        //if let image = UIImage(named: "dott.png") {
+            view.backgroundColor = .white
+        //}
         
         rightImagView1.tag = 1
         rightImagView2.tag = 2
@@ -46,7 +53,7 @@ class ViewController: UIViewController {
         
         loadImageArray()
         loadandAlignImages()
-        
+    
     
     }
 
@@ -69,7 +76,7 @@ class ViewController: UIViewController {
         splashImageView.contentMode = .scaleAspectFill
         splashImageView.frame = self.view.frame
         self.view.addSubview(splashImageView)
-        self.view.bringSubview(toFront: splashImageView)
+        self.view.bringSubviewToFront(splashImageView)
         UIView.animate(withDuration: 0.3, delay: 2.0, options: .transitionFlipFromLeft, animations: {() -> Void in
             
             let y: CGFloat = 0.0
@@ -87,8 +94,12 @@ class ViewController: UIViewController {
     
     
     //dissmiss alert and start new game
-    func alertClose(_ sender:AnyObject) {
+    @objc func alertClose(_ sender:AnyObject) {
         self.dismiss(animated: true, completion: nil)
+        backView.removeFromSuperview()
+        congratsView.removeFromSuperview()
+        removeGestures()
+        addGestures()
         
         //reinitialize data & start new game
         if points == winingpoints ||  ImageArray.count == 0{
@@ -105,7 +116,7 @@ class ViewController: UIViewController {
     //show alert
     func Alert(title:String, message:String){
         
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         self.present(alert, animated: true, completion:{
             
             self.view.superview?.isUserInteractionEnabled = true
@@ -125,7 +136,7 @@ class ViewController: UIViewController {
             
             //show congrats alert when win the game
             if points == winingpoints{
-                Alert(title:"Congratulation", message:"You win the game")
+                animateImage()
             }
             //show sorry alert when loose the game
             else if ImageArray.count == 0{
@@ -166,7 +177,7 @@ class ViewController: UIViewController {
     
         "icon81.png","icon82.png","icon83.png","icon84.png","icon85.png","icon86.png","icon87.png" ]
         
-      
+    
     }
     
     
@@ -250,71 +261,91 @@ class ViewController: UIViewController {
             }
 
         }
+    
+    
+    //play appropriate sound
+    func playSound(){
+        
+        if points == winingpoints{
+            playSound(Resource:"complete", Extension:"wav")
+        }
+        else{
+            playSound(Resource:"click", Extension:"mp3")
+        }
+        
+        //     playSound(Resource:"click", Extension:"mp3")
+  
+    }
+    
 
     //right side imageview1 tap event
-    func image1Taped(_ sender:AnyObject){
-        
-        playSound()
+    @objc func image1Taped(_ sender:AnyObject){
         
         if(sender.view.tag == imgViewIndex){
             print("True")
             points += 1
             pointLbl.text = String(points) + "/25"
+            playSound()
+            loadandAlignImages()
         }
         else{
             print("False")
+            sender.view.shake()
         }
         
-        loadandAlignImages()
     }
     
     //right side imageview2 tap event
-    func image2Taped(_ sender:AnyObject){
-        
-        playSound()
+    @objc func image2Taped(_ sender:AnyObject){
         
         if(sender.view.tag == imgViewIndex){
             print("True")
             points += 1
             pointLbl.text = String(points) + "/25"
+            playSound()
+            loadandAlignImages()
         }
         else{
             print("False")
+            sender.view.shake()
         }
         
-        loadandAlignImages()
+        
     }
     
     //right side imageview3 tap event
-    func image3Taped(_ sender:AnyObject){
+    @objc func image3Taped(_ sender:AnyObject){
         
-        playSound()
+            if(sender.view.tag == imgViewIndex){
+                print("True")
+                points += 1
+                pointLbl.text = String(points) + "/25"
+                playSound()
+                loadandAlignImages()
+            }
+            else{
+                print("False")
+                sender.view.shake()
+            }
         
-        if(sender.view.tag == imgViewIndex){
-            print("True")
-            points += 1
-            pointLbl.text = String(points) + "/25"
-        }
-        else{
-            print("False")
-        }
-        
-        loadandAlignImages()
     }
     
     //play a sound with image click
-    func playSound() {
-        guard let url = Bundle.main.url(forResource: "click", withExtension: "mp3") else {
+  //  func playSound() {
+        
+    func playSound(Resource:String, Extension:String) {
+        
+        guard let url = Bundle.main.url(forResource: Resource, withExtension: Extension) else {
             print("url not found")
             return
         }
         
         do {
             /// this codes for making this app ready to takeover the device audio
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
             try AVAudioSession.sharedInstance().setActive(true)
             
-            player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3)
+            player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
             player!.play()
         } catch let error as NSError {
             print("error: \(error.localizedDescription)")
@@ -326,22 +357,90 @@ class ViewController: UIViewController {
     func addGestures() {
         
         //add tap gesture in rightImagView1 for clicking in image
-        let tapGestureRecognizer1 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image1Taped(_:)))
+        tapGestureRecognizer1 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image1Taped(_:)))
         rightImagView1.isUserInteractionEnabled = true
         tapGestureRecognizer1.numberOfTapsRequired = 1
         rightImagView1.addGestureRecognizer(tapGestureRecognizer1)
         
-        //add tap gesture in rightImagView1 for clicking in image
-        let tapGestureRecognizer2 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image2Taped(_:)))
+        //add tap gesture in rightImagView2 for clicking in image
+        tapGestureRecognizer2 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image2Taped(_:)))
         rightImagView2.isUserInteractionEnabled = true
         tapGestureRecognizer2.numberOfTapsRequired = 1
         rightImagView2.addGestureRecognizer(tapGestureRecognizer2)
         
-        //add tap gesture in rightImagView1 for clicking in image
-        let tapGestureRecognizer3 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image3Taped(_:)))
+        //add tap gesture in rightImagView3 for clicking in image
+        tapGestureRecognizer3 = UITapGestureRecognizer(target: self, action: #selector(ViewController.image3Taped(_:)))
         rightImagView3.isUserInteractionEnabled = true
         tapGestureRecognizer3.numberOfTapsRequired = 1
         rightImagView3.addGestureRecognizer(tapGestureRecognizer3)
     }
+    
+    
+    
+    //add a congratulation image when player score 25 points
+    func animateImage(){
+        
+        removeGestures()
+        
+        let congratsImageArray = ["congrats1.png","congrats2.png","congrats3.png","congrats4.png","congrats5.png"]
+        let imageIndex = Int(arc4random() % UInt32(congratsImageArray.count))
+        
+        //create a backview with alpha 0.7
+        backView.frame = self.view.frame
+        backView.backgroundColor = UIColor.black
+        backView.alpha = 0.7
+        
+        //create a imageview
+        let congratsImage = UIImage(named: congratsImageArray[imageIndex])
+        congratsView = UIImageView(image: congratsImage)
+        congratsView.contentMode = .scaleAspectFit
+        congratsView.frame = CGRect(x: backView.frame.size.width/4, y: backView.frame.size.height/4, width: backView.frame.size.width/2, height: backView.frame.size.height/2)
+        congratsView.alpha = 1.0
+       
+        //add the views to parent view
+        self.view.addSubview(backView)
+        self.view.addSubview(congratsView)
+        
+        //smaller the views
+        backView.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+        congratsView.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+        
+        //animate the view
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {() -> Void in
+            // animate it to the identity transform (100% scale)
+            self.backView.transform = CGAffineTransform.identity
+            self.congratsView.transform = CGAffineTransform.identity
+        }, completion: {(_ finished: Bool) -> Void in
+            // if you want to do something once the animation finishes, put it here
+            
+            self.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.alertClose(_:))))
+            
+            print("anime complete")
+        })
+        
+    }
+    
+    
+    //remove gestures from right image views
+    func removeGestures() {
+        self.rightImagView1.removeGestureRecognizer(self.tapGestureRecognizer1)
+        self.rightImagView2.removeGestureRecognizer(self.tapGestureRecognizer2)
+        self.rightImagView3.removeGestureRecognizer(self.tapGestureRecognizer3)
+    }
+    
+    
+    
 }
 
+
+extension UIView {
+    func shake(){
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.duration = 0.07
+        animation.repeatCount = 3
+        animation.autoreverses = true
+        animation.fromValue = NSValue(cgPoint: CGPoint(x: self.center.x - 10, y: self.center.y))
+        animation.toValue = NSValue(cgPoint: CGPoint(x: self.center.x + 10, y: self.center.y))
+        self.layer.add(animation, forKey: "position")
+    }
+}
